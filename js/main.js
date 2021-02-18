@@ -2,47 +2,91 @@ const compose = (...functions) => (data) =>
 	functions.reduceRight((value, func) => func(value), data);
 
 /*DOM Node Elements */
-let description = document.getElementById('description');
+let title = document.getElementById('title');
 let carbohidrates = document.getElementById('carbohidrates');
 let calories = document.getElementById('calories');
 let proteins = document.getElementById('proteins');
 let totalCarbs = document.getElementById('totalCarbs');
 let totalCalories = document.getElementById('totalCalories');
 let totalProteins = document.getElementById('totalProteins');
+const $overlay = document.querySelector('.overlay');
+const $addItemForm = document.querySelector('.inputs');
+const $addItemButton = document.querySelector('.add--item button');
 
 /* Variables */
 let list = [];
-const inputs = [description, carbohidrates, calories, proteins];
+const inputs = [title, carbohidrates, calories, proteins];
+const mount = 'mount';
+const unmount = 'unmount';
+const months = [
+	'Enero',
+	'Febrero',
+	'Marzo',
+	'Abril',
+	'Mayo',
+	'Junio',
+	'Julio',
+	'Agosto',
+	'Septiembre',
+	'Octubre',
+	'Noviembre',
+	'Diciembre'
+];
 
-/*Events*/
-description.onkeypress = () => description.classList.remove('is-invalid');
-carbohidrates.onkeypress = () => carbohidrates.classList.remove('is-invalid');
-calories.onkeypress = () => calories.classList.remove('is-invalid');
-proteins.onkeypress = () => proteins.classList.remove('is-invalid');
+// Events
+$overlay.addEventListener('click', () => renderform(unmount));
+inputs.forEach((input) => {
+	input.onkeypress = () => input.parentNode.classList.remove('is-invalid');
+});
+$addItemButton.onclick = () => renderform(mount);
 
 /* Functions*/
 function validateInputs() {
 	inputs.forEach((input) => {
-		!input.value && input.classList.add('is-invalid');
+		const { parentNode } = input;
+		!input.value && parentNode.classList.add('is-invalid');
 	});
 	const hasValues = inputs.every((input) => input.value);
 	if (hasValues) {
 		addToList();
+		renderform(unmount);
 	}
 }
 
 const addToList = () => {
+	const time = new Date();
+	const date = time.getDate();
+	const month = months[time.getMonth()];
+	const year = time.getFullYear();
 	const newItem = {
-		description: description.value,
+		title: title.value,
 		calories: parseInt(calories.value),
 		carbohidrates: parseInt(carbohidrates.value),
-		proteins: parseInt(proteins.value)
+		proteins: parseInt(proteins.value),
+		addedTime: `${date} ${month}, ${year}`
 	};
 	list.push(newItem);
 	renderItems();
 	cleaninputs();
-	updateTotals();
+	// updateTotals();
 };
+
+function renderform(action) {
+	switch (action) {
+		case mount:
+			$overlay.classList.add('active');
+			$addItemForm.classList.add('active');
+			document.title = 'Añadir un Item';
+			break;
+		case unmount:
+			$overlay.classList.remove('active');
+			$addItemForm.classList.remove('active');
+			document.title = 'Contador de calorias';
+			break;
+		default:
+			break;
+	}
+}
 
 const updateTotals = () => {
 	let calories = 0;
@@ -61,39 +105,21 @@ const updateTotals = () => {
 const cleaninputs = () => inputs.map((input) => (input.value = ''));
 
 const renderItems = () => {
-	const tableBody = document.querySelector('#listOfItems');
-	tableBody.innerHTML = '';
-	list.map(({ description, calories, carbohidrates, proteins }, index) => {
-		const trashIcon = createHtmlTag({
-			tag: 'i',
-			attrs: { class: 'fas fa-trash-alt' }
-		})('');
-		const removeButton = createHtmlTag({
-			tag: 'button',
-			attrs: {
-				class: 'btn btn-outline-danger',
-				onClick: `removeItem(${index})`
-			}
-		})(trashIcon);
-		tableBody.innerHTML += mapTableRow([
-			description,
-			calories,
-			carbohidrates,
-			proteins,
-			removeButton
-		]);
+	const listOfItems = document.querySelector('#list-of-items');
+	listOfItems.innerHTML = '';
+	list.map((item) => {
+		const itemWrapper = createNodeElement('div');
+		const itemToHtml = itemTemplate(item);
+		listOfItems.append(itemWrapper(itemToHtml));
 	});
 };
 
-const createHtmlTag = (tag) => {
-	if (typeof tag === 'string') return innerTagAttributes({ tag });
-
-	return innerTagAttributes(tag);
-};
-
-const attrsToString = (obj = {}) => {
-	const keys = Object.keys(obj);
-	return keys.map((key) => `${key}="${obj[key]}"`).join(' ');
+const createNodeElement = (tag) => {
+	const element = document.createElement(tag);
+	return (content) => {
+		element.innerHTML = content;
+		return element;
+	};
 };
 
 const innerTagAttributes = (obj) => (content = '') => {
@@ -109,9 +135,29 @@ function removeItem(index) {
 	updateTotals();
 }
 
-const tableCell = createHtmlTag('td');
-const mapTableCell = (cells) => cells.map(tableCell).join('');
-
-const tableRow = createHtmlTag('tr');
-const mapTableRow = (rows) => tableRow(mapTableCell(rows));
-// const mapTableRow = (rows) => compose(tableRow, mapTableCell)(rows);
+const itemTemplate = (el) =>
+	`<div class="item--container">
+		<h3 class="item--title">
+			${el.title}
+			<span>${el.addedTime}</span>
+		</h3>
+		<div class="item-description">
+			<p class="item-calories">
+				Calorias: <span>${el.calories}</span>
+			</p>
+			<p class="item-carbohidrates">
+				Carbohidratos: <span>${el.carbohidrates}</span>
+			</p>
+			<p class="item-proteins">
+				Proteínas: <span>${el.proteins}</span>
+			</p>
+		</div>
+		<div class="item--buttons">
+			<button class="button--delete">
+				<img src="./img/delete-sign.png" />
+			</button>
+			<button class="button--edit">
+				<img src="./img/edit.png" />
+			</button>
+		</div>
+	</div>`;

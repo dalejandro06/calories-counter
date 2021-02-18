@@ -1,3 +1,7 @@
+:root {
+	--border-radius: 15px;
+}
+
 * {
 	box-sizing: border-box;
 	padding: 0;
@@ -10,6 +14,12 @@ button {
 	background: transparent;
 	border: none;
 }
+
+input {
+	border: none;
+	outline: none;
+}
+
 .container {
 	display: flex;
 	justify-content: center;
@@ -38,22 +48,26 @@ button {
 	padding-left: 1.5em;
 	align-items: center;
 	position: relative;
-	border-radius: 15px;
+	border-radius: calc(var(--border-radius) - 5px);
 	background-color: #f4f9f9;
+	overflow: hidden;
 }
 
 .item--container::before {
 	content: '';
 	display: block;
 	width: 7px;
-	left: 1px;
-	height: 70%;
+	height: 100%;
 	background-color: #eaffd0;
 	position: absolute;
-	border-radius: 20px;
+	border-radius: var(--border-radius);
 }
 .item--title {
 	grid-row: 1 / 1;
+}
+.item--title span {
+	font-size: 12px;
+	font-weight: normal;
 }
 
 .item-description {
@@ -71,6 +85,16 @@ button {
 	background-color: red;
 }
 
+.item-description p {
+	font-size: 0.9em;
+	font-weight: 600;
+}
+
+.item-description span {
+	font-weight: normal;
+	font-size: 14px;
+}
+
 .item--buttons {
 	height: 100%;
 	grid-row-start: 1;
@@ -81,25 +105,41 @@ button {
 }
 
 .item--buttons button {
-	background: gainsboro;
+	background: #f5f4f4;
 	width: 30%;
-	border-radius: 10px;
+	height: 35px;
+	border-radius: var(--border-radius);
 	cursor: pointer;
 	margin-right: 1em;
 	display: grid;
 	place-items: center;
 }
+.item--buttons .button--delete:hover {
+	background-color: red;
+}
+.item--buttons .button--edit:hover {
+	background-color: blue;
+}
 
 .item--buttons button > img {
-	width: 30px;
+	width: 20px;
 }
 
 .add--item {
 	border: 2px dashed #eaffd0;
 	align-items: center;
 	position: relative;
-	border-radius: 15px;
+	border-radius: var(--border-radius);
 	margin: 1em auto;
+}
+.add--item:hover {
+	box-shadow: -5px 10px 20px 2px #cfd1d1;
+	border: none;
+	animation: scale-up 0.4s;
+}
+.add--item:active {
+	transform: scale(0.8);
+	transition: 0.3s;
 }
 
 .add--item button {
@@ -111,18 +151,112 @@ button {
 
 .inputs {
 	position: fixed;
+	grid-template-rows: 20% 80%;
 	top: 50%;
-	background-color: wheat;
+	background-color: #f6f5f5;
 	left: 0;
 	right: 0;
 	bottom: 0;
 	border-top-left-radius: 60px;
 	border-top-right-radius: 60px;
-	justify-content: center;
-	align-items: center;
 	display: none;
+	z-index: 1000;
+	padding: 3em;
 }
 
 .inputs.active {
-	display: flex;
+	display: grid;
+	animation: enter-to-window 0.8s;
+}
+.is-invalid {
+	border: 1px solid red;
+}
+
+.inputs--container {
+	display: grid;
+	grid-template-areas: 'title calories' 'carbs proteins' 'button button';
+	width: 100%;
+	align-content: stretch;
+	gap: 1em;
+}
+
+.input--wrapper {
+	background-color: white;
+	border-radius: var(--border-radius);
+	padding: 0 10px;
+}
+
+.input--wrapper input {
+	width: 90%;
+	height: 100%;
+	border-radius: inherit;
+}
+
+.button--add {
+	grid-area: button;
+	background-color: #a1cae2;
+	border-radius: 15px;
+}
+.button--add button {
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+	font-size: 1.2em;
+}
+.button--add:hover {
+	animation: scale-up 0.4s;
+}
+.button--add:active {
+	transform: scale(0.9);
+	transition: 0.5s;
+}
+
+.overlay {
+	z-index: 100;
+	background-color: rgb(82 82 82 / 56%);
+	backdrop-filter: blur(1px);
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: none;
+}
+
+.overlay.active {
+	display: block;
+	animation: show-in 1s;
+}
+
+@keyframes scale-up {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.1);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+@keyframes show-in {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes enter-to-window {
+	0% {
+		transform: scale(0.5) translateY(1500px);
+	}
+	50% {
+		transform: scale(0.7) translateY(1000px);
+	}
+	100% {
+		transform: scale(1) translateY(0);
+	}
 }

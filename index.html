@@ -6,7 +6,9 @@
 			name="viewport"
 			content="width=device-width, initial-scale=1, shrink-to-fit=no"
 		/>
-		<title>Calories Counter</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=7" />
+		<meta name="theme-color" content="#ffffff" />
+		<title>Contador de calorias</title>
 		<link rel="preconnect" href="https://fonts.gstatic.com" />
 		<link
 			href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
@@ -19,56 +21,29 @@
 			<div class="container--center">
 				<div class="title">
 					<h1>Calories Counter</h1>
-					<h5>Lunes, Octubre 19, 2021 1:50:30 PM</h5>
+					<p>Lunes, Octubre 19, 2021 1:50:30 PM</p>
 				</div>
 				<main class="table--main">
 					<div id="list-of-items" class="items--list">
 						<div class="item--container">
-							<h3 class="item--title">Manzana</h3>
+							<h3 class="item--title">
+								Manzana
+								<span>Julio 2021</span>
+							</h3>
 							<div class="item-description">
-								<div class="item-calories">Calorias: 0</div>
-								<div class="item-carbohidrates">Carbohidratos: 0</div>
-								<div class="item-proteins">Proteínas: 0</div>
+								<p class="item-calories">Calorias: <span>120</span></p>
+								<p class="item-carbohidrates">
+									Carbohidratos: <span>100</span>
+								</p>
+								<p class="item-proteins">Proteínas: <span>50</span></p>
 							</div>
 							<div class="item--buttons">
-								<button class="button--delete">X</button>
-								<button class="button--edit">eliminar</button>
-							</div>
-						</div>
-						<div class="item--container">
-							<h3 class="item--title">Manzana</h3>
-							<div class="item-description">
-								<div class="item-calories">Calorias: 0</div>
-								<div class="item-carbohidrates">Carbohidratos: 0</div>
-								<div class="item-proteins">Proteínas: 0</div>
-							</div>
-							<div class="item--buttons">
-								<button class="button--delete">X</button>
-								<button class="button--edit">eliminar</button>
-							</div>
-						</div>
-						<div class="item--container">
-							<h3 class="item--title">Manzana</h3>
-							<div class="item-description">
-								<div class="item-calories">Calorias: 0</div>
-								<div class="item-carbohidrates">Carbohidratos: 0</div>
-								<div class="item-proteins">Proteínas: 0</div>
-							</div>
-							<div class="item--buttons">
-								<button class="button--delete">X</button>
-								<button class="button--edit">eliminar</button>
-							</div>
-						</div>
-						<div class="item--container">
-							<h3 class="item--title">Manzana</h3>
-							<div class="item-description">
-								<div class="item-calories">Calorias: 0</div>
-								<div class="item-carbohidrates">Carbohidratos: 0</div>
-								<div class="item-proteins">Proteínas: 0</div>
-							</div>
-							<div class="item--buttons">
-								<button class="button--delete">X</button>
-								<button class="button--edit">eliminar</button>
+								<button class="button--delete">
+									<img src="./img/delete-sign.png" />
+								</button>
+								<button class="button--edit">
+									<img src="./img/edit.png" />
+								</button>
 							</div>
 						</div>
 					</div>
@@ -78,11 +53,12 @@
 				</div>
 				<div class="overlay"></div>
 				<div class="inputs">
-					<div>
-						<div>
-							<input type="text" id="description" placeholder="Description" />
+					<h2>Añade un item</h2>
+					<div class="inputs--container">
+						<div class="input--wrapper">
+							<input type="text" id="title" placeholder="Title" />
 						</div>
-						<div>
+						<div class="input--wrapper">
 							<input
 								type="number"
 								id="calories"
@@ -90,7 +66,7 @@
 								placeholder="Calories"
 							/>
 						</div>
-						<div>
+						<div class="input--wrapper">
 							<input
 								type="number"
 								id="carbohidrates"
@@ -98,7 +74,7 @@
 								placeholder="Carbs"
 							/>
 						</div>
-						<div>
+						<div class="input--wrapper">
 							<input
 								type="number"
 								id="proteins"
@@ -106,7 +82,7 @@
 								placeholder="Protein"
 							/>
 						</div>
-						<div>
+						<div class="button--add">
 							<button onclick="validateInputs()">Añadir</button>
 						</div>
 					</div>

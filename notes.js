@@ -26,6 +26,22 @@ function sum2(a, b) {
 	return a + b + c;
 }
 
+// Closures
+function createTag(tag) {
+	return (content) => `<${tag}>${content}</${tag}>`;
+}
+const h1 = createTag('h1');
+h1('Contenido de un h1');
+
+// Currying
+function buildSum(a) {
+	return (b) => a + b;
+}
+
+const addFive = buildSum(5);
+
+console.log(addFive(5));
+
 // FUNCIONES MUTABLES VS INMUTABLES
 // Las funciones mutables son aquellas que mutan o cambian el valor de algún dato que le llegue por parámetro, mientras las inmutables son aquellas que no mutan ningún valor pasado por parámetro si no que devuelven uno nuevo
 

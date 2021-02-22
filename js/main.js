@@ -1,7 +1,4 @@
-const compose = (...functions) => (data) =>
-	functions.reduceRight((value, func) => func(value), data);
-
-/*DOM Node Elements */
+/*DOM Elements */
 let title = document.getElementById('title');
 let carbohidrates = document.getElementById('carbohidrates');
 let calories = document.getElementById('calories');
@@ -12,6 +9,9 @@ let totalProteins = document.getElementById('totalProteins');
 const $overlay = document.querySelector('.overlay');
 const $addItemForm = document.querySelector('.inputs');
 const $addItemButton = document.querySelector('.add--item button');
+const $btnAddForm = document.querySelector('.button--add button');
+const listOfItems = document.querySelector('#list-of-items');
+const timeParagraph = document.getElementById('time');
 
 /* Variables */
 let list = [];
@@ -35,10 +35,12 @@ const months = [
 
 // Events
 $overlay.addEventListener('click', () => renderform(unmount));
-inputs.forEach((input) => {
-	input.onkeypress = () => input.parentNode.classList.remove('is-invalid');
+window.addEventListener('load', validateChildCount);
+inputs.forEach(({ parentNode }) => {
+	input.onkeypress = () => parentNode.classList.remove('is-invalid');
 });
 $addItemButton.onclick = () => renderform(mount);
+$btnAddForm.onclick = validateInputs;
 
 /* Functions*/
 function validateInputs() {
@@ -82,9 +84,12 @@ function renderform(action) {
 			$overlay.classList.remove('active');
 			$addItemForm.classList.remove('active');
 			document.title = 'Contador de calorias';
+			inputs.forEach(({ parentNode }) =>
+				parentNode.classList.remove('is-invalid')
+			);
 			break;
 		default:
-			break;
+			throw TypeError(`No valid actions were provided, get "${action}" action`);
 	}
 }
 
@@ -105,37 +110,38 @@ const updateTotals = () => {
 const cleaninputs = () => inputs.map((input) => (input.value = ''));
 
 const renderItems = () => {
-	const listOfItems = document.querySelector('#list-of-items');
 	listOfItems.innerHTML = '';
-	list.map((item) => {
+	list.map((item, index) => {
 		const itemWrapper = createNodeElement('div');
-		const itemToHtml = itemTemplate(item);
+		const itemToHtml = itemTemplate(item, index);
 		listOfItems.append(itemWrapper(itemToHtml));
 	});
+	validateChildCount();
 };
 
-const createNodeElement = (tag) => {
+function createNodeElement(tag) {
 	const element = document.createElement(tag);
 	return (content) => {
 		element.innerHTML = content;
 		return element;
 	};
-};
+}
 
-const innerTagAttributes = (obj) => (content = '') => {
-	const hasAttributes = Object.entries(obj).length > 0;
-	return `<${obj.tag} ${hasAttributes && ' '} ${attrsToString(obj.attrs)}>
-		${content}
-		</${obj.tag}>`;
-};
+function validateChildCount() {
+	const tagElement = createNodeElement('h4');
+	if (!listOfItems.childElementCount) {
+		listOfItems.appendChild(tagElement('No hay contenido que mostrar'));
+	}
+	return tagElement;
+}
 
 function removeItem(index) {
 	list.splice(index, 1);
 	renderItems();
-	updateTotals();
+	// updateTotals();
 }
 
-const itemTemplate = (el) =>
+const itemTemplate = (el, index) =>
 	`<div class="item--container">
 		<h3 class="item--title">
 			${el.title}
@@ -153,10 +159,10 @@ const itemTemplate = (el) =>
 			</p>
 		</div>
 		<div class="item--buttons">
-			<button class="button--delete">
+			<button class="button--delete" onclick="removeItem(${index})">
 				<img src="./img/delete-sign.png" />
 			</button>
-			<button class="button--edit">
+			<button class="button--edit" onclick="editItem(${index})">
 				<img src="./img/edit.png" />
 			</button>
 		</div>

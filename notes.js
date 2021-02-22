@@ -1,6 +1,9 @@
 // las variables primitivas se almacenan y se acceden por valor, mientras que las variables de tipo objeto se almacenan y acceden por referencia.
 let a = {
-	name: 'Diego'
+	name: 'Diego',
+	attributes: {
+		height: '100'
+	}
 };
 // El primer parámetro es donde se va a hacer la copia (en este caso un nuevo objeto vacío) y la segunda que va a copiar
 // Object.assign copia los valores solo en el primer nivel

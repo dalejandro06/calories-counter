@@ -36,7 +36,8 @@ const months = [
 // Events
 $overlay.addEventListener('click', () => renderform(unmount));
 window.addEventListener('load', validateChildCount);
-inputs.forEach(({ parentNode }) => {
+inputs.forEach((input) => {
+	const { parentNode } = input;
 	input.onkeypress = () => parentNode.classList.remove('is-invalid');
 });
 $addItemButton.onclick = () => renderform(mount);

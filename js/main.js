@@ -11,7 +11,7 @@ const $addItemForm = document.querySelector('.inputs');
 const $addItemButton = document.querySelector('.add--item button');
 const $btnAddForm = document.querySelector('.button--add button');
 const listOfItems = document.querySelector('#list-of-items');
-const timeParagraph = document.getElementById('time');
+const totalContainer = document.querySelector('.totals');
 
 /* Variables */
 let list = [];
@@ -36,19 +36,23 @@ const months = [
 // Events
 $overlay.addEventListener('click', () => renderform(unmount));
 window.addEventListener('load', validateChildCount);
+
 inputs.forEach((input) => {
 	const { parentNode } = input;
 	input.onkeypress = () => parentNode.classList.remove('is-invalid');
 });
+
 $addItemButton.onclick = () => renderform(mount);
-$btnAddForm.onclick = validateInputs;
+$btnAddForm.onclick = (e) => validateInputs(e);
 
 /* Functions*/
-function validateInputs() {
-	inputs.forEach((input) => {
-		const { parentNode } = input;
-		!input.value && parentNode.classList.add('is-invalid');
+function validateInputs(e) {
+	e.preventDefault();
+	inputs.forEach(({ parentNode, value }) => {
+		!value && parentNode.classList.add('is-invalid');
+		setTimeout(() => parentNode.classList.remove('is-invalid'), 2000);
 	});
+
 	const hasValues = inputs.every((input) => input.value);
 	if (hasValues) {
 		addToList();
@@ -71,7 +75,7 @@ const addToList = () => {
 	list.push(newItem);
 	renderItems();
 	cleaninputs();
-	// updateTotals();
+	updateTotals();
 };
 
 function renderform(action) {
@@ -111,12 +115,12 @@ const updateTotals = () => {
 const cleaninputs = () => inputs.map((input) => (input.value = ''));
 
 const renderItems = () => {
-	listOfItems.innerHTML = '';
+	const itemWrapper = createNodeElement('div');
+	let itemToHtml;
 	list.map((item, index) => {
-		const itemWrapper = createNodeElement('div');
-		const itemToHtml = itemTemplate(item, index);
-		listOfItems.append(itemWrapper(itemToHtml));
+		itemToHtml = itemTemplate(item, index);
 	});
+	listOfItems.append(itemWrapper(itemToHtml));
 	validateChildCount();
 };
 
@@ -129,17 +133,28 @@ function createNodeElement(tag) {
 }
 
 function validateChildCount() {
-	const tagElement = createNodeElement('h4');
 	if (!listOfItems.childElementCount) {
+		const tagElement = createNodeElement('h4');
 		listOfItems.appendChild(tagElement('No hay contenido que mostrar'));
+		totalContainer.classList.add('hidden');
+	} else {
+		totalContainer.classList.remove('hidden');
 	}
-	return tagElement;
 }
 
 function removeItem(index) {
 	list.splice(index, 1);
 	renderItems();
-	// updateTotals();
+	updateTotals();
+}
+
+function editItem(index) {
+	const itemToEdit = list[index];
+	renderform(mount);
+	// title.value = itemToEdit.title;
+	// carbohidrates.value = itemToEdit.carbohidrates;
+	// calories.value = itemToEdit.calories;
+	// proteins.value = itemToEdit.proteins;
 }
 
 const itemTemplate = (el, index) =>

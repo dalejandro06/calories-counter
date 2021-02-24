@@ -1,9 +1,9 @@
 :root {
 	--border-radius: 15px;
-	--main-color: #e6e6ec;
-	--second-color: #041955;
-	--third-color: #3450a1;
+	--bg-color: #e6e6ec;
+	--brand-color: #3450a1;
 	--text-color: black;
+	--items-bg-color: #f7f7e8;
 }
 
 * {
@@ -14,7 +14,7 @@
 }
 
 body {
-	background-color: var(--main-color);
+	background-color: var(--bg-color);
 }
 button {
 	background: transparent;
@@ -32,11 +32,16 @@ h6,
 p,
 span {
 	color: var(--text-color);
+	/* color: var(--brand-color); */
 }
 
 input {
 	border: none;
 	outline: none;
+}
+
+.hidden {
+	display: none;
 }
 
 .container {
@@ -53,6 +58,9 @@ input {
 .title {
 	margin: 2em auto;
 }
+.title h1 {
+	color: var(--text-color);
+}
 
 .items--list {
 	display: grid;
@@ -62,19 +70,35 @@ input {
 
 .item--container {
 	align-items: center;
-	/* background-color: #f4f9f9; */
 	border-radius: calc(var(--border-radius) - 5px);
 	display: grid;
+	background-color: var(--items-bg-color);
 	grid-template-columns: 70% 30%;
 	grid-template-rows: 1fr 1fr;
 	overflow: hidden;
 	padding-left: 1.5em;
 	padding: 1em;
 	position: relative;
+	animation: left 1s ease 0.1s forwards;
+	transform: translateX(-10000px);
+}
+
+@keyframes left {
+	0% {
+		opacity: 0;
+		transform: translateX(-10000px);
+	}
+	90% {
+		opacity: 1;
+		transform: translateX(100px);
+	}
+	100% {
+		transform: translateX(0);
+	}
 }
 
 .item--container::before {
-	background-color: #eaffd0;
+	background-color: #7d83b7;
 	border-radius: var(--border-radius);
 	content: '';
 	display: block;
@@ -88,6 +112,8 @@ input {
 .item--title span {
 	font-size: 12px;
 	font-weight: normal;
+	margin-left: 1em;
+	font-style: italic;
 }
 
 .item-description {
@@ -97,7 +123,7 @@ input {
 	justify-content: space-around;
 }
 .item-description::before {
-	background-color: red;
+	background-color: #aa2b1d;
 	border-radius: 50%;
 	content: '';
 	display: block;
@@ -135,16 +161,64 @@ input {
 	margin-right: 1em;
 	place-items: center;
 	width: 30%;
+	transition: 1s;
 }
 .item--buttons .button--delete:hover {
-	background-color: red;
+	background-color: #aa2b1d;
 }
 .item--buttons .button--edit:hover {
-	background-color: blue;
+	background-color: #8ac4d0;
 }
 
 .item--buttons button > img {
 	width: 20px;
+}
+
+.item--buttons button:hover img {
+	transform: rotate(360deg);
+	transition: 0.9s;
+}
+
+.item--buttons button:active {
+	transform: scale(0.8);
+	transition: 0.2s;
+}
+
+.totals {
+	margin: 1em auto;
+}
+
+.totals-counter {
+	display: flex;
+	overflow-x: scroll;
+	width: 100%;
+	padding: 1em;
+	padding-left: 0;
+	box-sizing: border-box;
+}
+
+.totals-counter::-webkit-scrollbar {
+	display: none;
+}
+
+.totals-container {
+	background-color: #aa2b1d;
+	padding: 1em;
+	margin-right: 2em;
+	display: flex;
+	align-items: center;
+	border-radius: var(--border-radius);
+}
+
+.total-image {
+	margin-right: 1em;
+}
+.total-image img {
+	width: 35px;
+}
+.total-description > * {
+	color: white;
+	text-align: center;
 }
 
 .add--item {
@@ -152,12 +226,11 @@ input {
 	border-radius: var(--border-radius);
 	margin: 1em auto;
 	position: relative;
-	background-color: var(--third-color);
+	background-color: var(--brand-color);
 }
 .add--item:hover {
 	animation: scale-up 0.4s;
 	border: none;
-	box-shadow: -5px 10px 20px 2px #cfd1d1;
 }
 .add--item:active {
 	transform: scale(0.8);
@@ -173,7 +246,7 @@ input {
 }
 
 .inputs {
-	background-color: #f6f5f5;
+	background-color: var(--bg-color);
 	border-top-left-radius: 60px;
 	border-top-right-radius: 60px;
 	bottom: 0;
@@ -188,12 +261,12 @@ input {
 }
 
 .inputs.active {
-	animation: enter-to-window 0.8s;
+	animation: animate__backInUp 0.7s;
 	display: grid;
 }
 .is-invalid {
 	border: 1px solid red;
-	animation: scale-up 0.5s;
+	animation: shakeX 0.5s;
 }
 .is-invalid::after {
 	content: '';
@@ -223,10 +296,11 @@ input {
 	border-radius: inherit;
 	height: 100%;
 	width: 90%;
+	font-size: 1em;
 }
 
 .button--add {
-	background-color: #a1cae2;
+	background-color: var(--brand-color);
 	border-radius: 15px;
 	grid-area: button;
 }
@@ -261,18 +335,6 @@ input {
 	animation: show-in 1s;
 }
 
-/* CUSTOM BACKGROUND COLORS */
-.blue-gradient {
-	background-image: linear-gradient(
-		to right,
-		#4c8fcf,
-		#59a5d7,
-		#70b9de,
-		#8ccde4,
-		#ace0eb
-	);
-}
-
 /* KEYFRAMES */
 @keyframes scale-up {
 	0% {
@@ -293,15 +355,38 @@ input {
 		opacity: 1;
 	}
 }
-@keyframes enter-to-window {
+@keyframes animate__backInUp {
 	0% {
-		transform: scale(0.5) translateY(1500px);
+		transform: translateY(1500px) scale(0.5);
 	}
-	50% {
-		transform: scale(0.7) translateY(1000px);
+	60% {
+		transform: translateY(1000px) scale(0.7);
+	}
+	90% {
+		transform: translateY(0) scale(0.9);
 	}
 	100% {
-		transform: scale(1) translateY(0);
+		transform: scale(1);
+	}
+}
+@keyframes shakeX {
+	0% {
+		transform: translateX(10px);
+	}
+	20% {
+		transform: translateX(-10px);
+	}
+	40% {
+		transform: translateX(10px);
+	}
+	60% {
+		transform: translateX(-10px);
+	}
+	80% {
+		transform: translateX(10px);
+	}
+	100% {
+		transform: translateX(0);
 	}
 }
 
@@ -336,19 +421,21 @@ input {
 	}
 }
 
-@media screen and (max-height: 600px) {
+@media screen and (max-height: 560px) {
 	.inputs {
 		top: 30%;
 	}
 }
-@media screen and (max-height: 400px) {
+@media screen and (max-height: 440px) {
 	.inputs {
 		top: 10%;
 	}
 }
-/* @media (prefers-color-scheme: dark) {
+
+@media (prefers-color-scheme: dark) {
 	:root {
-		--main-color: var(--second-color);
+		--bg-color: #242731;
 		--text-color: white;
+		--items-bg-color: #383e56;
 	}
-} */
+}

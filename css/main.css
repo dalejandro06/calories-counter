@@ -4,6 +4,7 @@
 	--brand-color: #3450a1;
 	--text-color: black;
 	--items-bg-color: #f7f7e8;
+	--items-bg-buttons: #f5f4f4;
 }
 
 * {
@@ -153,7 +154,7 @@ input {
 }
 
 .item--buttons button {
-	background: #f5f4f4;
+	background: var(--items-bg-buttons);
 	border-radius: var(--border-radius);
 	cursor: pointer;
 	display: grid;
@@ -203,6 +204,7 @@ input {
 
 .totals-container {
 	background-color: #aa2b1d;
+	/* background-color: #525298; */
 	padding: 1em;
 	margin-right: 2em;
 	display: flex;
@@ -437,5 +439,6 @@ input {
 		--bg-color: #242731;
 		--text-color: white;
 		--items-bg-color: #383e56;
+		--items-bg-buttons: #dfdfdf;
 	}
 }

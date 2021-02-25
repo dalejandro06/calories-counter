@@ -83,15 +83,14 @@ function renderform(action) {
 		case mount:
 			$overlay.classList.add('active');
 			$addItemForm.classList.add('active');
-			document.title = 'Añadir un Item';
 			break;
 		case unmount:
 			$overlay.classList.remove('active');
 			$addItemForm.classList.remove('active');
-			document.title = 'Contador de calorias';
 			inputs.forEach(({ parentNode }) =>
 				parentNode.classList.remove('is-invalid')
 			);
+			cleaninputs();
 			break;
 		default:
 			throw TypeError(`No valid actions were provided, get "${action}" action`);
@@ -157,10 +156,10 @@ function removeItem(index) {
 function editItem(index) {
 	const itemToEdit = list[index];
 	renderform(mount);
-	// title.value = itemToEdit.title;
-	// carbohidrates.value = itemToEdit.carbohidrates;
-	// calories.value = itemToEdit.calories;
-	// proteins.value = itemToEdit.proteins;
+	title.value = itemToEdit.title;
+	carbohidrates.value = itemToEdit.carbohidrates;
+	calories.value = itemToEdit.calories;
+	proteins.value = itemToEdit.proteins;
 }
 
 const itemTemplate = (el, index) =>

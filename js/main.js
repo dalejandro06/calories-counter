@@ -116,16 +116,18 @@ const cleaninputs = () => inputs.map((input) => (input.value = ''));
 
 const renderItems = () => {
 	const itemWrapper = createNodeElement('div');
-	let itemToHtml;
 	list.map((item, index) => {
-		itemToHtml = itemTemplate(item, index);
+		const itemToHtml = itemTemplate(item, index);
+		listOfItems.append(itemWrapper(itemToHtml));
 	});
-	listOfItems.append(itemWrapper(itemToHtml));
 	validateChildCount();
 };
 
-function createNodeElement(tag) {
+function createNodeElement(tag = 'div', attributes = {}) {
 	const element = document.createElement(tag);
+	for (const attribute in attributes) {
+		element.setAttribute(attribute, attributes[attribute]);
+	}
 	return (content) => {
 		element.innerHTML = content;
 		return element;
@@ -134,18 +136,22 @@ function createNodeElement(tag) {
 
 function validateChildCount() {
 	if (!listOfItems.childElementCount) {
-		const tagElement = createNodeElement('h4');
+		const tagElement = createNodeElement('h4', { id: 'not-elements' });
 		listOfItems.appendChild(tagElement('No hay contenido que mostrar'));
 		totalContainer.classList.add('hidden');
 	} else {
 		totalContainer.classList.remove('hidden');
+		const notItems = document.getElementById('not-elements');
+		notItems && notItems.remove();
 	}
 }
 
 function removeItem(index) {
 	list.splice(index, 1);
-	renderItems();
+	const childToRemove = listOfItems.children[index];
+	listOfItems.removeChild(childToRemove);
 	updateTotals();
+	validateChildCount();
 }
 
 function editItem(index) {

@@ -80,22 +80,7 @@ input {
 	padding-left: 1.5em;
 	padding: 1em;
 	position: relative;
-	animation: left 1s ease 0.1s forwards;
-	transform: translateX(-10000px);
-}
-
-@keyframes left {
-	0% {
-		opacity: 0;
-		transform: translateX(-10000px);
-	}
-	90% {
-		opacity: 1;
-		transform: translateX(100px);
-	}
-	100% {
-		transform: translateX(0);
-	}
+	animation: bounce-in 0.8s ease forwards;
 }
 
 .item--container::before {
@@ -389,6 +374,33 @@ input {
 	}
 	100% {
 		transform: translateX(0);
+	}
+}
+
+@keyframes bounce-in {
+	0% {
+		opacity: 0;
+		transform: scale(0.5);
+	}
+	20% {
+		opacity: 0.5;
+		transform: scale(1.1);
+	}
+	40% {
+		opacity: 0.7;
+		transform: scale(0.8);
+	}
+	60% {
+		opacity: 0.8;
+		transform: scale(1.1);
+	}
+	80% {
+		opacity: 0.9;
+		transform: scale(0.9);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
 	}
 }
 

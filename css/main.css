@@ -248,7 +248,7 @@ input {
 }
 
 .inputs.active {
-	animation: animate__backInUp 0.7s;
+	animation: backInUp 0.7s;
 	display: grid;
 }
 .is-invalid {
@@ -342,7 +342,8 @@ input {
 		opacity: 1;
 	}
 }
-@keyframes animate__backInUp {
+
+@keyframes backInUp {
 	0% {
 		transform: translateY(1500px) scale(0.5);
 	}
@@ -350,7 +351,7 @@ input {
 		transform: translateY(1000px) scale(0.7);
 	}
 	90% {
-		transform: translateY(0) scale(0.9);
+		transform: translateY(0) scale(0.8);
 	}
 	100% {
 		transform: scale(1);
@@ -446,11 +447,18 @@ input {
 	}
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--bg-color: #242731;
-		--text-color: white;
-		--items-bg-color: #383e56;
-		--items-bg-buttons: #dfdfdf;
-	}
+body.dark * {
+	color: white;
+}
+.dark {
+	background-color: #242731;
+}
+.dark .inputs {
+	background-color: #242731;
+}
+.dark .inputs input {
+	color: #242731;
+}
+.dark .item--container {
+	background-color: #383e56;
 }

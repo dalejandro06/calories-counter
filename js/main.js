@@ -1,18 +1,18 @@
 /*DOM Elements */
-let title = document.getElementById('title');
+const title = document.getElementById('title');
 const toggleTheme = document.getElementById('toggle-theme');
-let carbohidrates = document.getElementById('carbohidrates');
-let calories = document.getElementById('calories');
-let proteins = document.getElementById('proteins');
-let totalCarbs = document.getElementById('totalCarbs');
-let totalCalories = document.getElementById('totalCalories');
-let totalProteins = document.getElementById('totalProteins');
+const carbohidrates = document.getElementById('carbohidrates');
+const calories = document.getElementById('calories');
+const proteins = document.getElementById('proteins');
+const totalCarbs = document.getElementById('totalCarbs');
+const totalCalories = document.getElementById('totalCalories');
+const totalProteins = document.getElementById('totalProteins');
 const $overlay = document.querySelector('.overlay');
 const $addItemForm = document.querySelector('.inputs');
 const $addItemButton = document.querySelector('.add--item button');
 const $btnAddForm = document.querySelector('.button--add button');
 const listOfItems = document.querySelector('#list-of-items');
-const totalContainer = document.querySelector('.totals');
+const totalsContainer = document.querySelector('.totals');
 
 /* Variables */
 let list = [];
@@ -37,12 +37,11 @@ const months = [
 // Events
 $overlay.addEventListener('click', () => renderform(unmount));
 window.addEventListener('load', validateChildCount);
-
+// Delete 'is-invalid' class when keypress within the input
 inputs.forEach((input) => {
 	const { parentNode } = input;
 	input.onkeypress = () => parentNode.classList.remove('is-invalid');
 });
-
 toggleTheme.onclick = changeTheme;
 $addItemButton.onclick = () => renderform(mount);
 $btnAddForm.onclick = (e) => validateInputs(e);
@@ -57,7 +56,7 @@ function validateInputs(e) {
 
 	const hasValues = inputs.every((input) => input.value);
 	if (hasValues) {
-		addToList();
+		addItemToList();
 		renderform(unmount);
 	}
 }
@@ -69,13 +68,15 @@ function changeTheme() {
 		: (toggleTheme.textContent = 'Dark');
 }
 
-const addToList = () => {
+const addItemToList = () => {
 	const time = new Date();
 	const date = time.getDate();
 	const month = months[time.getMonth()];
 	const year = time.getFullYear();
+	const id = Math.round(Math.random() * 10000);
 
 	const newItem = {
+		id,
 		title: title.value,
 		calories: parseInt(calories.value),
 		carbohidrates: parseInt(carbohidrates.value),
@@ -85,7 +86,6 @@ const addToList = () => {
 
 	list.push(newItem);
 	renderItems();
-	cleaninputs();
 	updateTotals();
 };
 
@@ -122,18 +122,25 @@ const updateTotals = () => {
 const cleaninputs = () =>
 	inputs.map((input) => {
 		input.parentNode.classList.remove('is-invalid');
-		return (input.value = '');
+		input.value = '';
 	});
 
 const renderItems = () => {
-	const itemWrapper = createNodeElement('div', { class: 'item--container' });
-	list.map((item, index) => {
-		const itemToHtml = itemTemplate(item, index);
-		listOfItems.append(itemWrapper(itemToHtml));
+	debugger;
+	let itemWrapper;
+	let itemToHtml;
+	list.map((item) => {
+		itemWrapper = createNodeElement('div', {
+			class: 'item--container',
+			'data-id': item.id
+		});
+		itemToHtml = itemTemplate(item);
 	});
+	listOfItems.appendChild(itemWrapper(itemToHtml));
 	validateChildCount();
 };
 
+// receive a html tag and attributes for that element
 function createNodeElement(tag = 'div', attributes = {}) {
 	const element = document.createElement(tag);
 	for (const attribute in attributes) {
@@ -145,35 +152,44 @@ function createNodeElement(tag = 'div', attributes = {}) {
 	};
 }
 
+// Validate if there is one of more children on the list wrapper
 function validateChildCount() {
 	if (!listOfItems.childElementCount) {
 		const tagElement = createNodeElement('h4', { id: 'not-elements' });
 		listOfItems.appendChild(tagElement('No hay contenido que mostrar'));
-		totalContainer.classList.add('hidden');
+		totalsContainer.classList.add('hidden');
 	} else {
-		totalContainer.classList.remove('hidden');
-		const notItems = document.getElementById('not-elements');
-		notItems?.remove();
+		totalsContainer.classList.remove('hidden');
+		document.getElementById('not-elements')?.remove();
 	}
 }
 
-function removeItem(el, index) {
+function removeItem(el) {
+	const { index } = getIndexFromItem(el.offsetParent);
 	list.splice(index, 1);
 	el.offsetParent.remove();
 	updateTotals();
 	validateChildCount();
 }
 
-function editItem(index) {
-	const itemToEdit = list[index];
-	title.value = itemToEdit.title;
-	carbohidrates.value = itemToEdit.carbohidrates;
-	calories.value = itemToEdit.calories;
-	proteins.value = itemToEdit.proteins;
+function editItem(el) {
+	const { itemToRemove } = getIndexFromItem(el.offsetParent);
+	title.value = itemToRemove.title;
+	carbohidrates.value = itemToRemove.carbohidrates;
+	calories.value = itemToRemove.calories;
+	proteins.value = itemToRemove.proteins;
 	renderform(mount);
 }
 
-const itemTemplate = (el, index) =>
+// Returns an index and the item found giving a html element
+function getIndexFromItem(nodeElement) {
+	const id = Number(nodeElement.getAttribute('data-id'));
+	const itemToRemove = list.find((item) => item.id === id);
+	const index = list.indexOf(itemToRemove);
+	return { index, itemToRemove };
+}
+
+const itemTemplate = (el) =>
 	`<h3 class="item--title">
 			${el.title}
 			<span>${el.addedTime}</span>
@@ -190,10 +206,10 @@ const itemTemplate = (el, index) =>
 			</p>
 		</div>
 		<div class="item--buttons">
-			<button class="button--delete" onclick="removeItem(this, ${index})">
+			<button class="button--delete" onclick="removeItem(this)">
 				<img src="./img/delete-sign.png" />
 			</button>
-			<button class="button--edit" onclick="editItem(${index})">
+			<button class="button--edit" onclick="editItem(this)">
 				<img src="./img/edit.png" />
 			</button>
 		</div>`;

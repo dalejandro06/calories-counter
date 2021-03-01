@@ -449,9 +449,11 @@ input {
 
 body.dark * {
 	color: white;
+	transition: 0.5s;
 }
 .dark {
 	background-color: #242731;
+	transition: 0.5s;
 }
 .dark .inputs {
 	background-color: #242731;

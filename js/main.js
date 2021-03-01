@@ -83,7 +83,6 @@ const addItemToList = () => {
 		proteins: parseInt(proteins.value),
 		addedTime: `${date} ${month}, ${year}`
 	};
-
 	list.push(newItem);
 	renderItems();
 	updateTotals();
@@ -126,7 +125,6 @@ const cleaninputs = () =>
 	});
 
 const renderItems = () => {
-	debugger;
 	let itemWrapper;
 	let itemToHtml;
 	list.map((item) => {
@@ -156,7 +154,7 @@ function createNodeElement(tag = 'div', attributes = {}) {
 function validateChildCount() {
 	if (!listOfItems.childElementCount) {
 		const tagElement = createNodeElement('h4', { id: 'not-elements' });
-		listOfItems.appendChild(tagElement('No hay contenido que mostrar'));
+		listOfItems.appendChild(tagElement('There is no content to show'));
 		totalsContainer.classList.add('hidden');
 	} else {
 		totalsContainer.classList.remove('hidden');
@@ -172,13 +170,27 @@ function removeItem(el) {
 	validateChildCount();
 }
 
+// Open modal form with the values of the current item
 function editItem(el) {
-	const { itemToRemove } = getIndexFromItem(el.offsetParent);
+	const { itemToRemove, index } = getIndexFromItem(el.offsetParent);
 	title.value = itemToRemove.title;
 	carbohidrates.value = itemToRemove.carbohidrates;
 	calories.value = itemToRemove.calories;
 	proteins.value = itemToRemove.proteins;
 	renderform(mount);
+}
+
+function updateItem(itemToRemove, index) {
+	const newItem = {
+		id: itemToRemove.id,
+		title: title.value,
+		carbohidrates: carbohidrates.value,
+		calories: calories.value,
+		proteins: proteins.value,
+		addedTime: itemToRemove.addedTime
+	};
+	const itemRemoved = list.splice(index, 1, newItem);
+	console.log(itemRemoved);
 }
 
 // Returns an index and the item found giving a html element

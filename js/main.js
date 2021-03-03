@@ -53,7 +53,6 @@ function validateInputs(e) {
 		!value && parentNode.classList.add('is-invalid');
 		setTimeout(() => parentNode.classList.remove('is-invalid'), 2000);
 	});
-
 	const hasValues = inputs.every((input) => input.value);
 	if (hasValues) {
 		addItemToList();
@@ -89,7 +88,7 @@ const addItemToList = () => {
 };
 
 function renderform(action) {
-	switch (action.type || action) {
+	switch (action) {
 		case mount:
 			$overlay.classList.add('active');
 			$addItemForm.classList.add('active');
@@ -102,13 +101,6 @@ function renderform(action) {
 		default:
 			throw TypeError(`No valid actions were provided, get "${action}" action`);
 	}
-	return (callback) => {
-		if (action.edit) {
-			$btnAddForm.onclick = callback;
-			$addItemForm.firstElementChild.textContent = 'Edit item';
-			$addItemForm.addEventListener('submit', callback);
-		}
-	};
 }
 
 const updateTotals = () => {
@@ -132,17 +124,16 @@ const cleaninputs = () =>
 	});
 
 const renderItems = () => {
-	// let itemWrapper;
-	// let itemToHtml;
-	listOfItems.innerHTML = '';
+	let itemWrapper;
+	let itemToHtml;
 	list.map((item) => {
-		const itemWrapper = createNodeElement('div', {
+		itemWrapper = createNodeElement('div', {
 			class: 'item--container',
 			'data-id': item.id
 		});
-		const itemToHtml = itemTemplate(item);
-		listOfItems.appendChild(itemWrapper(itemToHtml));
+		itemToHtml = itemTemplate(item);
 	});
+	listOfItems.appendChild(itemWrapper(itemToHtml));
 	validateChildCount();
 	updateTotals();
 };
@@ -181,16 +172,11 @@ function removeItem(el) {
 
 // Open modal form with the values of the current item
 function editItem(el) {
-	const { itemToRemove, index } = getIndexFromItem(el.offsetParent);
+	const { itemToRemove } = getIndexFromItem(el.offsetParent);
 	title.value = itemToRemove.title;
 	carbohidrates.value = itemToRemove.carbohidrates;
 	calories.value = itemToRemove.calories;
 	proteins.value = itemToRemove.proteins;
-	const prueba = renderform({ type: mount, edit: true });
-	prueba((e) => {
-		e.preventDefault();
-		updateItem(itemToRemove, index);
-	});
 }
 
 function updateItem(itemToRemove, index) {

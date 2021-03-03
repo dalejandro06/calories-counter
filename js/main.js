@@ -47,7 +47,7 @@ $addItemButton.onclick = () => renderform(mount);
 $btnAddForm.onclick = validateInputs;
 
 /* Functions*/
-function validateInputs(e) {
+function validateInputs(e, type) {
 	e.preventDefault();
 	inputs.forEach(({ parentNode, value }) => {
 		!value && parentNode.classList.add('is-invalid');
@@ -172,14 +172,18 @@ function removeItem(el) {
 
 // Open modal form with the values of the current item
 function editItem(el) {
-	const { itemToRemove } = getIndexFromItem(el.offsetParent);
+	const { itemToRemove, index } = getIndexFromItem(el.offsetParent);
 	title.value = itemToRemove.title;
 	carbohidrates.value = itemToRemove.carbohidrates;
 	calories.value = itemToRemove.calories;
 	proteins.value = itemToRemove.proteins;
+	renderform(mount);
+	$btnAddForm.addEventListener('click', () =>
+		updateItem({ itemToRemove, index }, el.offsetParent)
+	);
 }
 
-function updateItem(itemToRemove, index) {
+function updateItem({ itemToRemove, index }, nodeToRemove) {
 	const newItem = {
 		id: itemToRemove.id,
 		title: title.value,
@@ -188,9 +192,14 @@ function updateItem(itemToRemove, index) {
 		proteins: Number(proteins.value),
 		addedTime: itemToRemove.addedTime
 	};
+	const newNode = createNodeElement('div', {
+		class: 'item--container',
+		'data-id': newItem.id
+	});
+	const itemHtml = itemTemplate(newItem);
+	listOfItems.replaceChild(newNode(itemHtml), nodeToRemove);
 	list.splice(index, 1, newItem);
-	renderform(unmount);
-	renderItems();
+	// renderform(unmount);
 }
 
 // Returns an index and the item found giving a html element

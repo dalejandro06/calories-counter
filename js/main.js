@@ -44,7 +44,7 @@ inputs.forEach((input) => {
 });
 toggleTheme.onclick = changeTheme;
 $addItemButton.onclick = () => renderform(mount);
-$btnAddForm.onclick = (e) => validateInputs(e);
+$btnAddForm.onclick = validateInputs;
 
 /* Functions*/
 function validateInputs(e) {
@@ -89,7 +89,7 @@ const addItemToList = () => {
 };
 
 function renderform(action) {
-	switch (action) {
+	switch (action.type || action) {
 		case mount:
 			$overlay.classList.add('active');
 			$addItemForm.classList.add('active');
@@ -102,6 +102,13 @@ function renderform(action) {
 		default:
 			throw TypeError(`No valid actions were provided, get "${action}" action`);
 	}
+	return (callback) => {
+		if (action.edit) {
+			$btnAddForm.onclick = callback;
+			$addItemForm.firstElementChild.textContent = 'Edit item';
+			$addItemForm.addEventListener('submit', callback);
+		}
+	};
 }
 
 const updateTotals = () => {
@@ -125,17 +132,19 @@ const cleaninputs = () =>
 	});
 
 const renderItems = () => {
-	let itemWrapper;
-	let itemToHtml;
+	// let itemWrapper;
+	// let itemToHtml;
+	listOfItems.innerHTML = '';
 	list.map((item) => {
-		itemWrapper = createNodeElement('div', {
+		const itemWrapper = createNodeElement('div', {
 			class: 'item--container',
 			'data-id': item.id
 		});
-		itemToHtml = itemTemplate(item);
+		const itemToHtml = itemTemplate(item);
+		listOfItems.appendChild(itemWrapper(itemToHtml));
 	});
-	listOfItems.appendChild(itemWrapper(itemToHtml));
 	validateChildCount();
+	updateTotals();
 };
 
 // receive a html tag and attributes for that element
@@ -177,20 +186,25 @@ function editItem(el) {
 	carbohidrates.value = itemToRemove.carbohidrates;
 	calories.value = itemToRemove.calories;
 	proteins.value = itemToRemove.proteins;
-	renderform(mount);
+	const prueba = renderform({ type: mount, edit: true });
+	prueba((e) => {
+		e.preventDefault();
+		updateItem(itemToRemove, index);
+	});
 }
 
 function updateItem(itemToRemove, index) {
 	const newItem = {
 		id: itemToRemove.id,
 		title: title.value,
-		carbohidrates: carbohidrates.value,
-		calories: calories.value,
-		proteins: proteins.value,
+		carbohidrates: Number(carbohidrates.value),
+		calories: Number(calories.value),
+		proteins: Number(proteins.value),
 		addedTime: itemToRemove.addedTime
 	};
-	const itemRemoved = list.splice(index, 1, newItem);
-	console.log(itemRemoved);
+	list.splice(index, 1, newItem);
+	renderform(unmount);
+	renderItems();
 }
 
 // Returns an index and the item found giving a html element

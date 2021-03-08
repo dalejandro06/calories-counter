@@ -1,7 +1,7 @@
 import deleteIcon from '../img/delete-sign.png';
 import editIcon from '../img/edit.png';
 
-export default itemTemplate = (el) =>
+const itemTemplate = (el) =>
 	`<h3 class="item--title">
     ${el.title}
     <span>${el.addedTime}</span>
@@ -25,3 +25,5 @@ export default itemTemplate = (el) =>
       <img src="${editIcon}" />
     </button>
   </div>`;
+
+export default itemTemplate;

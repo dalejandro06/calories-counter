@@ -1,5 +1,9 @@
 import './css/main.css';
 import itemTemplate from './templates/Item';
+import changeTheme from './utils/toggleTheme';
+import getIndexFromItem from './utils/getIndexFromItem';
+import createNodeElement from './utils/createNodeElement';
+import cleanInputs from './utils/cleanInputs';
 
 /*DOM Elements */
 const title = document.getElementById('title');
@@ -16,12 +20,6 @@ const $addItemButton = document.querySelector('.add--item button');
 const $btnAddForm = document.querySelector('.button--add button');
 const listOfItems = document.querySelector('#list-of-items');
 const totalsContainer = document.querySelector('.totals');
-
-listOfItems.addEventListener('click', ({ target }) => {
-	if (['IMG', 'BUTTON'].includes(target.nodeName)) {
-		console.log({ target });
-	}
-});
 
 /* Variables */
 let list = [];
@@ -51,7 +49,7 @@ inputs.forEach((input) => {
 	const { parentNode } = input;
 	input.onkeypress = () => parentNode.classList.remove('is-invalid');
 });
-toggleTheme.onclick = changeTheme;
+toggleTheme.onclick = () => changeTheme(toggleTheme);
 $addItemButton.onclick = () => renderform(mount);
 $btnAddForm.onclick = validateInputs;
 
@@ -67,13 +65,6 @@ function validateInputs(e) {
 		addItemToList();
 		renderform(unmount);
 	}
-}
-
-function changeTheme() {
-	document.body.classList.toggle('dark');
-	document.body.classList.contains('dark')
-		? (toggleTheme.textContent = 'Light')
-		: (toggleTheme.textContent = 'Dark');
 }
 
 const addItemToList = () => {
@@ -105,7 +96,7 @@ function renderform(action) {
 		case unmount:
 			$overlay.classList.remove('active');
 			$addItemForm.classList.remove('active');
-			cleaninputs();
+			cleanInputs(inputs);
 			break;
 		default:
 			throw TypeError(`No valid actions were provided, get "${action}" action`);
@@ -126,12 +117,6 @@ const updateTotals = () => {
 	totalProteins.textContent = proteins;
 };
 
-const cleaninputs = () =>
-	inputs.map((input) => {
-		input.parentNode.classList.remove('is-invalid');
-		input.value = '';
-	});
-
 const renderItems = () => {
 	let itemWrapper;
 	let itemToHtml;
@@ -147,18 +132,6 @@ const renderItems = () => {
 	updateTotals();
 };
 
-// receive a html tag and attributes for that element
-function createNodeElement(tag = 'div', attributes = {}) {
-	const element = document.createElement(tag);
-	for (const attribute in attributes) {
-		element.setAttribute(attribute, attributes[attribute]);
-	}
-	return (content) => {
-		element.innerHTML = content;
-		return element;
-	};
-}
-
 // Validate if there is one of more children on the list wrapper
 function validateChildCount() {
 	if (!listOfItems.childElementCount) {
@@ -172,7 +145,7 @@ function validateChildCount() {
 }
 
 function removeItem(el) {
-	const { index } = getIndexFromItem(el.offsetParent);
+	const { index } = getIndexFromItem(el.offsetParent, list);
 	list.splice(index, 1);
 	el.offsetParent.remove();
 	updateTotals();
@@ -181,7 +154,7 @@ function removeItem(el) {
 
 // Open modal form with the values of the current item
 function editItem(el) {
-	const { itemToRemove, index } = getIndexFromItem(el.offsetParent);
+	const { itemToRemove, index } = getIndexFromItem(el.offsetParent, list);
 	title.value = itemToRemove.title;
 	carbohidrates.value = itemToRemove.carbohidrates;
 	calories.value = itemToRemove.calories;
@@ -191,6 +164,9 @@ function editItem(el) {
 		updateItem({ itemToRemove, index }, el.offsetParent)
 	);
 }
+
+window.removeItem = removeItem;
+window.editItem = editItem;
 
 function updateItem({ itemToRemove, index }, nodeToRemove) {
 	const newItem = {
@@ -208,12 +184,4 @@ function updateItem({ itemToRemove, index }, nodeToRemove) {
 	const itemHtml = itemTemplate(newItem);
 	listOfItems.replaceChild(newNode(itemHtml), nodeToRemove);
 	list.splice(index, 1, newItem);
-}
-
-// Returns an index and the item found giving a html element
-function getIndexFromItem(nodeElement) {
-	const id = Number(nodeElement.getAttribute('data-id'));
-	const itemToRemove = list.find((item) => item.id === id);
-	const index = list.indexOf(itemToRemove);
-	return { index, itemToRemove };
 }

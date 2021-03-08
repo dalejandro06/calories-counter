@@ -1,3 +1,6 @@
+import './css/main.css';
+import itemTemplate from './templates/Item';
+
 /*DOM Elements */
 const title = document.getElementById('title');
 const toggleTheme = document.getElementById('toggle-theme');
@@ -13,6 +16,12 @@ const $addItemButton = document.querySelector('.add--item button');
 const $btnAddForm = document.querySelector('.button--add button');
 const listOfItems = document.querySelector('#list-of-items');
 const totalsContainer = document.querySelector('.totals');
+
+listOfItems.addEventListener('click', ({ target }) => {
+	if (['IMG', 'BUTTON'].includes(target.nodeName)) {
+		console.log({ target });
+	}
+});
 
 /* Variables */
 let list = [];
@@ -47,7 +56,7 @@ $addItemButton.onclick = () => renderform(mount);
 $btnAddForm.onclick = validateInputs;
 
 /* Functions*/
-function validateInputs(e, type) {
+function validateInputs(e) {
 	e.preventDefault();
 	inputs.forEach(({ parentNode, value }) => {
 		!value && parentNode.classList.add('is-invalid');
@@ -199,7 +208,6 @@ function updateItem({ itemToRemove, index }, nodeToRemove) {
 	const itemHtml = itemTemplate(newItem);
 	listOfItems.replaceChild(newNode(itemHtml), nodeToRemove);
 	list.splice(index, 1, newItem);
-	// renderform(unmount);
 }
 
 // Returns an index and the item found giving a html element
@@ -209,28 +217,3 @@ function getIndexFromItem(nodeElement) {
 	const index = list.indexOf(itemToRemove);
 	return { index, itemToRemove };
 }
-
-const itemTemplate = (el) =>
-	`<h3 class="item--title">
-			${el.title}
-			<span>${el.addedTime}</span>
-		</h3>
-		<div class="item-description">
-			<p class="item-calories">
-				Calorias: <span>${el.calories}</span>
-			</p>
-			<p class="item-carbohidrates">
-				Carbohidratos: <span>${el.carbohidrates}</span>
-			</p>
-			<p class="item-proteins">
-				Proteínas: <span>${el.proteins}</span>
-			</p>
-		</div>
-		<div class="item--buttons">
-			<button class="button--delete" onclick="removeItem(this)">
-				<img src="./img/delete-sign.png" />
-			</button>
-			<button class="button--edit" onclick="editItem(this)">
-				<img src="./img/edit.png" />
-			</button>
-		</div>`;

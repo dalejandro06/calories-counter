@@ -4,6 +4,7 @@ import changeTheme from './utils/toggleTheme';
 import getIndexFromItem from './utils/getIndexFromItem';
 import createNodeElement from './utils/createNodeElement';
 import cleanInputs from './utils/cleanInputs';
+import getTodayDate from './utils/getTodayDate';
 
 /*DOM Elements */
 const title = document.getElementById('title');
@@ -26,20 +27,6 @@ let list = [];
 const inputs = [title, carbohidrates, calories, proteins];
 const mount = 'mount';
 const unmount = 'unmount';
-const months = [
-	'Enero',
-	'Febrero',
-	'Marzo',
-	'Abril',
-	'Mayo',
-	'Junio',
-	'Julio',
-	'Agosto',
-	'Septiembre',
-	'Octubre',
-	'Noviembre',
-	'Diciembre'
-];
 
 // Events
 $overlay.addEventListener('click', () => renderform(unmount));
@@ -68,19 +55,14 @@ function validateInputs(e) {
 }
 
 const addItemToList = () => {
-	const time = new Date();
-	const date = time.getDate();
-	const month = months[time.getMonth()];
-	const year = time.getFullYear();
 	const id = Math.round(Math.random() * 10000);
-
 	const newItem = {
 		id,
 		title: title.value,
 		calories: parseInt(calories.value),
 		carbohidrates: parseInt(carbohidrates.value),
 		proteins: parseInt(proteins.value),
-		addedTime: `${date} ${month}, ${year}`
+		addedTime: getTodayDate()
 	};
 	list.push(newItem);
 	renderItems();
@@ -160,22 +142,24 @@ function editItem(el) {
 	calories.value = itemToRemove.calories;
 	proteins.value = itemToRemove.proteins;
 	renderform(mount);
-	$btnAddForm.addEventListener('click', () =>
-		updateItem({ itemToRemove, index }, el.offsetParent)
-	);
+	$btnAddForm.onclick = null;
+	const action = (e) => {
+		e.preventDefault();
+		updateItem({ itemToRemove, index }, el.offsetParent);
+		$btnAddForm.onclick = validateInputs;
+		$btnAddForm.removeEventListener('click', action);
+	};
+	$btnAddForm.addEventListener('click', action);
 }
-
-window.removeItem = removeItem;
-window.editItem = editItem;
 
 function updateItem({ itemToRemove, index }, nodeToRemove) {
 	const newItem = {
 		id: itemToRemove.id,
-		title: title.value,
-		carbohidrates: Number(carbohidrates.value),
-		calories: Number(calories.value),
-		proteins: Number(proteins.value),
-		addedTime: itemToRemove.addedTime
+		title: title.value || itemToRemove.title,
+		carbohidrates: Number(carbohidrates.value) || itemToRemove.carbohidrates,
+		calories: Number(calories.value) || itemToRemove.calories,
+		proteins: Number(proteins.value) || itemToRemove.proteins,
+		addedTime: getTodayDate()
 	};
 	const newNode = createNodeElement('div', {
 		class: 'item--container',
@@ -184,4 +168,8 @@ function updateItem({ itemToRemove, index }, nodeToRemove) {
 	const itemHtml = itemTemplate(newItem);
 	listOfItems.replaceChild(newNode(itemHtml), nodeToRemove);
 	list.splice(index, 1, newItem);
+	renderform(unmount);
 }
+
+window.removeItem = removeItem;
+window.editItem = editItem;

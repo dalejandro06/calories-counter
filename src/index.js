@@ -169,6 +169,7 @@ function updateItem({ itemToRemove, index }, nodeToRemove) {
 	listOfItems.replaceChild(newNode(itemHtml), nodeToRemove);
 	list.splice(index, 1, newItem);
 	renderform(unmount);
+	updateTotals()
 }
 
 window.removeItem = removeItem;

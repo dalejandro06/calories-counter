@@ -75,6 +75,10 @@ module.exports = {
 				{
 					from: path.resolve(__dirname, 'src/img/'),
 					to: './assets/'
+				},
+				{
+					from: path.resolve(__dirname, 'public/', 'manifest.json'),
+					to: './'
 				}
 			]
 		}),

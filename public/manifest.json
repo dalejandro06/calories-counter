@@ -3,7 +3,8 @@
   "short_name": "Calories",
   "theme_color": "#e6e6ec",
   "background_color": "#e6e6ec",
-  "display": "standalone",
+  "display": "fullscreen",
+  "prefer_related_applications": false,
   "start_url": "/index.html",
   "icons": [
     {

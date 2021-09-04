@@ -5,19 +5,27 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
 	entry: './src/index.js',
 	output: {
 		path: path.resolve(__dirname, 'dist'),
-		filename: './js/[contenthash].js',
-		assetModuleFilename: 'assets/[contenthash][ext]'
+		filename: './js/[name]-[contenthash].js',
+		assetModuleFilename: 'assets/[name]-[contenthash][ext]'
 	},
 	optimization: {
 		minimize: true,
+		mangleWasmImports: true,
+		removeAvailableModules: true,
+		moduleIds: 'size',
 		minimizer: [
 			new TerserPlugin({
-				exclude: /\/node_modules/
+				exclude: /\/node_modules/,
+				extractComments: true,
+				terserOptions: {
+					ie8: false,
+				}
 			}),
 			new CssMinimizerPlugin({
 				parallel: true,
@@ -66,6 +74,7 @@ module.exports = {
 				}
 			]
 		}),
+		new BundleAnalyzerPlugin(),
 		new CleanWebpackPlugin({
 			cleanOnceBeforeBuildPatterns: true,
 			cleanAfterEveryBuildPatterns: true

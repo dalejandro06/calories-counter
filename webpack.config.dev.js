@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 
 module.exports = {
 	entry: './src/index.js',
@@ -60,6 +62,8 @@ module.exports = {
 				}
 			]
 		}),
+		new BundleAnalyzerPlugin(),
+
 		new webpack.HotModuleReplacementPlugin()
 	]
 };

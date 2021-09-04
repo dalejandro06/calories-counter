@@ -117,7 +117,7 @@ const renderItems = () => {
 // Validate if there is one of more children on the list wrapper
 function validateChildCount() {
 	if (!listOfItems.childElementCount) {
-		const tagElement = createNodeElement('h4', { id: 'not-elements' });
+		const tagElement = createNodeElement('p', { id: 'not-elements' });
 		listOfItems.appendChild(tagElement('There is no content to show'));
 		totalsContainer.classList.add('hidden');
 	} else {

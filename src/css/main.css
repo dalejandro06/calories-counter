@@ -230,6 +230,7 @@ input {
 	padding: 1em;
 	width: 100%;
 	font-size: 1em;
+	color: white;
 }
 
 .inputs {
@@ -296,6 +297,7 @@ input {
 	font-size: 1.2em;
 	height: 100%;
 	width: 100%;
+	color: white;
 }
 .button--add:hover {
 	animation: scale-up 0.4s;
@@ -320,6 +322,10 @@ input {
 .overlay.active {
 	display: block;
 	animation: show-in 1s;
+}
+
+#not-elements {
+	text-align: center;
 }
 
 /* KEYFRAMES */

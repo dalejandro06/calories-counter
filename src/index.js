@@ -31,10 +31,11 @@ const unmount = 'unmount';
 // Events
 $overlay.addEventListener('click', () => renderform(unmount));
 window.addEventListener('load', validateChildCount);
+
 // Delete 'is-invalid' class when keypress within the input
 inputs.forEach((input) => {
 	const { parentNode } = input;
-	input.onkeypress = () => parentNode.classList.remove('is-invalid');
+	input.onkeydown = () => parentNode.classList.remove('is-invalid')
 });
 toggleTheme.onclick = () => changeTheme(toggleTheme);
 $addItemButton.onclick = () => renderform(mount);

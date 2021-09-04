@@ -1,0 +1,9 @@
+{
+  "name": "Calories Counter",
+  "short_name": "Calories",
+  "theme_color": "#e6e6ec",
+  "background_color": "#e6e6ec",
+  "display": "standalone",
+  "start_url": "/index.html",
+  "icons": []
+}

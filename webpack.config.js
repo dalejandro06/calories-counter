@@ -6,6 +6,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = {
 	entry: './src/index.js',
@@ -62,6 +63,10 @@ module.exports = {
 			template: './public/index.html',
 			filename: './index.html',
 			minify: true
+		}),
+		new WorkboxPlugin.GenerateSW({
+			clientsClaim: true,
+			skipWaiting: true,
 		}),
 		new MiniCssExtractPlugin({
 			filename: './css/[contenthash].css'

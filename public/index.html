@@ -10,7 +10,7 @@
 		<meta name="keywords"
 			content="Calories, development, Javascript, Css, Html, functional programming, DOM manipulation">
 		<meta http-equiv="expires" content="43200" />
-		<meta name="theme-color" content="#ffffff" />
+		<meta name="theme-color" content="#e6e6ec" />
 		<title>Calories Counter</title>
 		<link rel="preconnect" href="https://fonts.gstatic.com" />
 		<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;1,300&display=swap" rel="stylesheet" />
@@ -87,6 +87,17 @@
 				</div>
 			</div>
 		</div>
+		<script>
+			if ('serviceWorker' in navigator) {
+				window.addEventListener('load', () => {
+					navigator.serviceWorker.register('/service-worker.js').then(registration => {
+						console.log('SW registered: ', registration);
+					}).catch(registrationError => {
+						console.log('SW registration failed: ', registrationError);
+					});
+				});
+			}
+		</script>
 	</body>
 
 </html>
